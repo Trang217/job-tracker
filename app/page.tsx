@@ -1,3 +1,4 @@
+import ImageTabs from "@/components/image-tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -29,6 +30,11 @@ export default function Home() {
               Free forever. No credit card required.
             </p>
           </div>
+        </section>
+
+        <section className="border-t bg-amber-50 py-16">
+          {/* Hero images sections with tabs */}
+          <ImageTabs />
         </section>
       </main>
     </div>
