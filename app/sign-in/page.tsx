@@ -12,8 +12,43 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/lib/auth/auth-client";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signIn.email({
+        email,
+        password,
+      });
+
+      if (result.error) {
+        setError(result.error.message ?? "Fail to sign in!");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-amber-50">
       <Card className="w-full max-w-md border-gray-200 shadow-lg">
@@ -26,8 +61,13 @@ export default function SignIn() {
           </CardDescription>
         </CardHeader>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {error && (
+              <div className="rounded-md p-3 bg-red-200 text-red-700 font-bold text-sm shadow-lg">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">
                 Email
@@ -38,6 +78,8 @@ export default function SignIn() {
                 placeholder="jenny@example.com"
                 required
                 className=" focus:border-rose-400 focus:ring-rose-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -51,6 +93,8 @@ export default function SignIn() {
                 minLength={8}
                 required
                 className="border-gray-300 focus:border-rose-400 focus:ring-rose-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </CardContent>
@@ -58,8 +102,9 @@ export default function SignIn() {
             <Button
               type="submit"
               className="w-full font-bold bg-rose-400 hover:bg-rose-400/90"
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Signing you in..." : "Sign In"}
             </Button>
             <p className="text-center text-sm text-gray-600">
               Do not have an account?{" "}
