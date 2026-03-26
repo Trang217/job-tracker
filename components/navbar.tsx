@@ -39,7 +39,10 @@ export default function Navbar() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Button variant="ghost" className=" font-bold">
+                  <Button
+                    variant="ghost"
+                    className=" font-bold relative h-8 w-8 rounded-full"
+                  >
                     <Avatar>
                       <AvatarFallback className="bg-rose-400 text-amber-50">
                         {session.user.name[0]}
@@ -48,11 +51,15 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>
-                    <div>
-                      <p>{session.user.name}</p>
-                      <p>{session.user.email}</p>
+                <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-bold leading-none">
+                        {session.user.name}
+                      </p>
+                      <p className="text-xs leading-none">
+                        {session.user.email}
+                      </p>
                     </div>
                   </DropdownMenuLabel>
                   <SignOut />
