@@ -1,8 +1,20 @@
+"use client";
 import { Briefcase } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import SignOut from "./sign-out-btn";
+import { useSession } from "@/lib/auth/auth-client";
+
 export default function Navbar() {
+  const { data: session } = useSession();
   return (
     <nav className="border-b border-gray-200 bg-amber-50">
       <div className="container mx-auto h-16 flex items-center justify-between px-4">
@@ -14,16 +26,56 @@ export default function Navbar() {
           Job Tracker
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/sign-in">
-            <Button variant="ghost" className="text-gray-700 hover:text-black">
-              Log In
-            </Button>
-          </Link>
-          <Link href="/sign-up">
-            <Button className="bg-rose-400 hover:bg-rose-400/90">
-              Start for free
-            </Button>
-          </Link>
+          {session?.user ? (
+            <>
+              <Link href="/dashboard">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 font-bold hover:text-black"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="ghost" className=" font-bold">
+                    <Avatar>
+                      <AvatarFallback className="bg-rose-400 text-amber-50">
+                        {session.user.name[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>
+                    <div>
+                      <p>{session.user.name}</p>
+                      <p>{session.user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <SignOut />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 hover:text-black"
+                >
+                  Log In
+                </Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button className="bg-rose-400 hover:bg-rose-400/90">
+                  Start for free
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
