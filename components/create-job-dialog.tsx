@@ -35,6 +35,15 @@ export default function CreateJobApplicationDialog({
     tags: "",
     description: "",
   });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    try {
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
@@ -54,7 +63,7 @@ export default function CreateJobApplicationDialog({
           <DialogDescription>Track a new job application</DialogDescription>
         </DialogHeader>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
