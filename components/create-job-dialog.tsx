@@ -73,21 +73,21 @@ export default function CreateJobApplicationDialog({
               </div>
             </div>
 
-            <div className="">
+            <div className="space-y-2">
               <Label htmlFor="jobUrl" className="text-gray-800 font-bold">
                 Job URL{" "}
               </Label>
               <Input id="jobUrl" placeholder="https://..." />
             </div>
 
-            <div className="">
+            <div className="space-y-2">
               <Label htmlFor="tags" className="text-gray-800 font-bold">
                 Tags (comma-separated)
               </Label>
               <Input id="tags" placeholder="React, Tailwind,v.v." />
             </div>
 
-            <div className="">
+            <div className="space-y-2">
               <Label htmlFor="description" className="text-gray-800 font-bold">
                 Description
               </Label>
@@ -98,7 +98,7 @@ export default function CreateJobApplicationDialog({
               />
             </div>
 
-            <div className="">
+            <div className="space-y-2">
               <Label htmlFor="note" className="text-gray-800 font-bold">
                 Note
               </Label>
@@ -109,7 +109,7 @@ export default function CreateJobApplicationDialog({
             <Button
               type="button"
               variant="outline"
-              className="font-bold text-gray-800"
+              className="font-bold text-gray-800 hover:text-rose-400 px-3"
             >
               Cancel
             </Button>
