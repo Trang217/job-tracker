@@ -14,19 +14,19 @@ export default function ImageTabs() {
         <div className="flex gap-2 justify-center mb-8">
           <Button
             onClick={() => setActiveTab("organize")}
-            className={`rounded-lg px-6 py-3 text-sm font-medium transition-colors ${activeTab === "organize" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
+            className={`rounded-lg px-6 py-3 text-sm font-bold transition-colors ${activeTab === "organize" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
           >
             Organize Applications
           </Button>
           <Button
             onClick={() => setActiveTab("hired")}
-            className={`rounded-lg px-6 py-3 text-sm font-medium transition-colors ${activeTab === "hired" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
+            className={`rounded-lg px-6 py-3 text-sm font-bold transition-colors ${activeTab === "hired" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
           >
             Get Hired
           </Button>
           <Button
             onClick={() => setActiveTab("boards")}
-            className={`rounded-lg px-6 py-3 text-sm font-medium transition-colors ${activeTab === "boards" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
+            className={`rounded-lg px-6 py-3 text-sm font-bold transition-colors ${activeTab === "boards" ? "bg-rose-400 text-amber-50" : "bg-gray-300 text-gray-700 hover:bg-gray-400"}`}
           >
             Manage Boards
           </Button>
