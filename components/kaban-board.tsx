@@ -20,6 +20,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import CreateJobApplicationDialog from "./create-job-dialog";
+import JobApplicationCard from "./ui/job-application-card";
 
 interface KabanBoardProps {
   board: Board;
@@ -106,30 +107,33 @@ function DroppableColumn({
       <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
         {sortedJobs.map((job, key) => {
           return (
-            <JobCard
+            <SortableJobCard
               key={key}
               job={{ ...job, columnId: job.columnId || column._id }}
-              columns={}
+              columns={sortedColumns}
             />
           );
         })}
+
         <CreateJobApplicationDialog columnId={column._id} boardId={boardId} />
       </CardContent>
     </Card>
   );
 }
 
-function JobCard({
+function SortableJobCard({
   job,
   columns,
 }: {
   job: JobApplication;
   columns: Column[];
-}) {}
+}) {
+  return <JobApplicationCard job={job} columns={columns} />;
+}
 
 export default function KabanBoard({ board, userId }: KabanBoardProps) {
   const columns = board.columns;
-  const sortedColumns = columns.sort((a, b) => a.order - b.order) || [];
+  const sortedColumns = columns?.sort((a, b) => a.order - b.order) || [];
 
   return (
     <>
