@@ -38,7 +38,7 @@ export default function CreateJobApplicationDialog({
 }: CreateJobApplicationDialogProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState(INITIAL_FORMDATA);
-
+  console.log("columnId", columnId);
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Board, Column } from "@/lib/models/models.types";
+import { Board, Column, JobApplication } from "@/lib/models/models.types";
 import {
   Award,
   Calendar,
@@ -59,9 +59,17 @@ interface DroppableColumnProp {
   column: Column;
   config: Config;
   boardId: string;
+  sortedColumns: Column[];
 }
 
-function DroppableColumn({ column, config, boardId }: DroppableColumnProp) {
+function DroppableColumn({
+  column,
+  config,
+  boardId,
+  sortedColumns,
+}: DroppableColumnProp) {
+  const sortedJobs =
+    column.jobApplications.sort((a, b) => a.order - b.order) || [];
   return (
     <Card className="min-w-75 flex-0 shadow-md p-0">
       <CardHeader
@@ -96,13 +104,32 @@ function DroppableColumn({ column, config, boardId }: DroppableColumnProp) {
       </CardHeader>
 
       <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
+        {sortedJobs.map((job, key) => {
+          return (
+            <JobCard
+              key={key}
+              job={{ ...job, columnId: job.columnId || column._id }}
+              columns={}
+            />
+          );
+        })}
         <CreateJobApplicationDialog columnId={column._id} boardId={boardId} />
       </CardContent>
     </Card>
   );
 }
+
+function JobCard({
+  job,
+  columns,
+}: {
+  job: JobApplication;
+  columns: Column[];
+}) {}
+
 export default function KabanBoard({ board, userId }: KabanBoardProps) {
   const columns = board.columns;
+  const sortedColumns = columns.sort((a, b) => a.order - b.order) || [];
 
   return (
     <>
@@ -119,6 +146,7 @@ export default function KabanBoard({ board, userId }: KabanBoardProps) {
                 column={col}
                 config={config}
                 boardId={board._id}
+                sortedColumns={sortedColumns}
               />
             );
           })}
