@@ -19,7 +19,7 @@ interface JobApplicationData {
 
 export async function createJobApplication(data: JobApplicationData) {
   const session = await getSession();
-
+  console.log("session", session);
   if (!session?.user) {
     return { error: "Unauthorized" };
   }
@@ -39,7 +39,7 @@ export async function createJobApplication(data: JobApplicationData) {
     columnId,
   } = data;
 
-  if (!company || !position || !boardId || columnId) {
+  if (!company || !position || !boardId || !columnId) {
     return { error: "Missing required fields" };
   }
 
@@ -65,13 +65,15 @@ export async function createJobApplication(data: JobApplicationData) {
     .select("order")
     .lean()) as { order: number } | null;
 
+  console.log("maxOrder", maxOrder);
+
   const jobApplication = await JobApplication.create({
     company,
     position,
     location,
     salary,
     note,
-    tags,
+    tags: tags || [],
     description,
     jobUrl,
     boardId,

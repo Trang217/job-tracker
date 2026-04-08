@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { initializeUserBoard } from "../init-user-board";
 
 const client = new MongoClient(process.env.MONGODB_URI!);
-const db = client.db("job-board");
+const db = client.db();
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, {

@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function Dashboard() {
   await connectDB();
   const session = await getSession();
-
+  console.log("session", session);
   if (!session?.user) {
     redirect("/sign-in");
   }
@@ -17,6 +17,9 @@ export default async function Dashboard() {
     name: "Job Hunt",
   }).populate({
     path: "columns",
+    populate: {
+      path: "jobApplications",
+    },
   });
 
   console.log(board);
