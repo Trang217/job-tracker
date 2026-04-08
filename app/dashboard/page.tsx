@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function Dashboard() {
   await connectDB();
   const session = await getSession();
-  console.log("session", session);
+
   if (!session?.user) {
     redirect("/sign-in");
   }
@@ -21,8 +21,6 @@ export default async function Dashboard() {
       path: "jobApplications",
     },
   });
-
-  console.log(board);
 
   return (
     <div className="min-h-screen bg-amber-50">
