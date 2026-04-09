@@ -19,7 +19,7 @@ interface JobApplicationData {
 
 export async function createJobApplication(data: JobApplicationData) {
   const session = await getSession();
-  console.log("session", session);
+
   if (!session?.user) {
     return { error: "Unauthorized" };
   }
@@ -64,8 +64,6 @@ export async function createJobApplication(data: JobApplicationData) {
     .sort({ order: -1 })
     .select("order")
     .lean()) as { order: number } | null;
-
-  console.log("maxOrder", maxOrder);
 
   const jobApplication = await JobApplication.create({
     company,
