@@ -3,17 +3,14 @@ import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db";
 import { Board } from "@/lib/models";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-export default async function Dashboard() {
+async function getBoard(userId: string) {
+  "use cache";
   await connectDB();
-  const session = await getSession();
 
-  if (!session?.user) {
-    redirect("/sign-in");
-  }
-
-  const board = await Board.findOne({
-    userId: session?.user.id,
+  const boardDoc = await Board.findOne({
+    userId: userId,
     name: "Job Hunt",
   }).populate({
     path: "columns",
@@ -21,6 +18,20 @@ export default async function Dashboard() {
       path: "jobApplications",
     },
   });
+
+  if (!boardDoc) return null;
+  const board = JSON.parse(JSON.stringify(boardDoc));
+
+  return board;
+}
+
+async function DashboardPage() {
+  const session = await getSession();
+  const board = await getBoard(session?.user.id ?? "");
+
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -30,11 +41,15 @@ export default async function Dashboard() {
           <p className="text-gray-600">Track your job applications</p>
         </div>
 
-        <KabanBoard
-          board={JSON.parse(JSON.stringify(board))}
-          userId={session.user.id}
-        />
+        <KabanBoard board={board} userId={session.user.id} />
       </div>
     </div>
+  );
+}
+export default async function Dashboard() {
+  return (
+    <Suspense fallback={<p>Loading</p>}>
+      <DashboardPage />
+    </Suspense>
   );
 }
