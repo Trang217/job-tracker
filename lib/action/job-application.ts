@@ -114,11 +114,14 @@ async function updateJobApplication(
     return { error: "Unauthorized" };
   }
 
+  // Finding job application we want to update
   const jobApplication = await JobApplication.findById(id);
 
   if (!jobApplication) {
     return { error: "Job application not found!" };
   }
+
+  // Check if loged-in user is user in the job application
 
   if (jobApplication.userId !== session.user.id) {
     return {
@@ -126,6 +129,7 @@ async function updateJobApplication(
     };
   }
 
+  // get what updates from arguments
   const { columnId, order, ...otherUpdated } = updates;
 
   const updateToApply: Partial<{
@@ -147,11 +151,12 @@ async function updateJobApplication(
     newColumnId && newColumnId !== currentColumnId;
 
   if (isMovingToDiffeerentColumn) {
-    // delete job in the old column
+    // delete job in the old column, pull is remove an item from array by passing id
     await Column.findByIdAndUpdate(currentColumnId, {
       $pull: { jobApplications: id },
     });
 
+    // get all the jobs in the column we want to move the job in excluding the job that we move
     const jobsInTargetColumn = await JobApplication.find({
       columnId: newColumnId,
       _id: { $ne: id },
