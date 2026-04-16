@@ -93,7 +93,7 @@ export async function createJobApplication(data: JobApplicationData) {
   return { data: JSON.parse(JSON.stringify(jobApplication)) };
 }
 
-async function updateJobApplication(
+export async function updateJobApplication(
   id: string,
   updates: {
     company?: string;
@@ -137,6 +137,7 @@ async function updateJobApplication(
     position: string;
     location: string;
     note: string;
+    salary: string;
     jobUrl: string;
     tags: string[];
     description: string;
@@ -191,7 +192,7 @@ async function updateJobApplication(
     updateToApply.order = newOrderValue;
 
     await Column.findByIdAndUpdate(newColumnId, {
-      $push: { jobApplication: id },
+      $push: { jobApplications: id },
     });
   } else if (order !== undefined && order !== null) {
     // if job is moving in the same column
@@ -239,6 +240,8 @@ async function updateJobApplication(
   const updated = await JobApplication.findByIdAndUpdate(id, updateToApply, {
     new: true,
   });
+
+  revalidatePath("/dashboard");
 
   return { data: JSON.parse(JSON.stringify(updated)) };
 }
