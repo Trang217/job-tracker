@@ -9,7 +9,10 @@ import {
   DropdownMenuItem,
 } from "./dropdown-menu";
 import { Button } from "./button";
-import { updateJobApplication } from "@/lib/action/job-application";
+import {
+  deleteJobApplication,
+  updateJobApplication,
+} from "@/lib/action/job-application";
 import {
   Dialog,
   DialogContent,
@@ -72,6 +75,17 @@ export default function JobApplicationCard({
     try {
     } catch (error) {
       console.error("Fail to move application", error);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      const result = await deleteJobApplication(job._id);
+      if (result.error) {
+        console.error("Fail to delete application", result.error);
+      }
+    } catch (error) {
+      console.error("Fail to delete application", error);
     }
   }
   return (
@@ -140,7 +154,7 @@ export default function JobApplicationCard({
                     </>
                   )}
 
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDelete}>
                     <Trash2Icon />
                     Delete
                   </DropdownMenuItem>
