@@ -1,13 +1,7 @@
 "use client";
 import { Column, JobApplication } from "@/lib/models/models.types";
 import { Card, CardContent } from "./card";
-import {
-  Edit2,
-  ExternalLink,
-  MoreVertical,
-  Plus,
-  Trash2Icon,
-} from "lucide-react";
+import { Edit2, ExternalLink, MoreVertical, Trash2Icon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,11 +17,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./dialog";
 import { Label } from "./label";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
+import { useState } from "react";
 
 interface JobApplicationCardProps {
   job: JobApplication;
@@ -38,6 +32,39 @@ export default function JobApplicationCard({
   job,
   columns,
 }: JobApplicationCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    company: job.company,
+    position: job.position,
+    location: job.location || "",
+    note: job.note || "",
+    salary: job.salary || "",
+    jobUrl: job.jobUrl || "",
+    columnId: job.columnId || "",
+    tags: job.tags?.join(", ") || "",
+    description: job.description || "",
+  });
+
+  async function handleUpdate(e: React.FormEvent) {
+    e.preventDefault();
+
+    try {
+      const result = await updateJobApplication(job._id, {
+        ...formData,
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0),
+      });
+
+      if (!result.error) {
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Fail to edit application", error);
+    }
+  }
+
   async function handleMove(newColumnId: string) {
     const result = await updateJobApplication(job._id, {
       columnId: newColumnId,
@@ -94,7 +121,7 @@ export default function JobApplicationCard({
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsEditing(true)}>
                     <Edit2 />
                     Edit
                   </DropdownMenuItem>
@@ -124,7 +151,7 @@ export default function JobApplicationCard({
         </CardContent>
       </Card>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="font-bold text-gray-800">
@@ -133,7 +160,7 @@ export default function JobApplicationCard({
             <DialogDescription>Track a new job application</DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleUpdate} className="space-y-4">
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -257,7 +284,7 @@ export default function JobApplicationCard({
                 type="button"
                 variant="outline"
                 className="font-bold text-gray-800 hover:text-rose-400 px-3"
-                onClick={() => setOpen(false)}
+                onClick={() => setIsEditing(false)}
               >
                 Cancel
               </Button>
