@@ -147,10 +147,10 @@ async function updateJobApplication(
   const currentColumnId = jobApplication.columnId.toString();
   const newColumnId = columnId?.toString();
 
-  const isMovingToDiffeerentColumn =
+  const isMovingToDifferentColumn =
     newColumnId && newColumnId !== currentColumnId;
 
-  if (isMovingToDiffeerentColumn) {
+  if (isMovingToDifferentColumn) {
     // delete job in the old column, pull is remove an item from array by passing id
     await Column.findByIdAndUpdate(currentColumnId, {
       $pull: { jobApplications: id },
@@ -176,6 +176,7 @@ async function updateJobApplication(
         });
       }
     } else {
+      // when order is null or undefined
       if (jobsInTargetColumn.length > 0) {
         const lastJobOrder =
           jobsInTargetColumn[jobsInTargetColumn.length - 1].order || 0;
@@ -193,5 +194,51 @@ async function updateJobApplication(
       $push: { jobApplication: id },
     });
   } else if (order !== undefined && order !== null) {
+    // if job is moving in the same column
+    const otherJobsInColumn = await JobApplication.find({
+      columnId: currentColumnId,
+      _id: { $ne: id },
+    })
+      .sort({ order: 1 })
+      .lean();
+
+    // find the job position currently in the list
+    const currentJobOrder = jobApplication.order || 0;
+    const currentPositionIndex = otherJobsInColumn.findIndex(
+      (job) => job.order > currentJobOrder,
+    );
+
+    const oldPositionIndex =
+      currentPositionIndex === -1
+        ? otherJobsInColumn.length
+        : currentPositionIndex;
+
+    const newOrderValue = order * 100;
+    if (order < oldPositionIndex) {
+      const jobsToShiftDown = otherJobsInColumn.slice(order, oldPositionIndex);
+
+      for (const job of jobsToShiftDown) {
+        await JobApplication.findByIdAndUpdate(job._id, {
+          $set: { order: job.order + 100 },
+        });
+      }
+    } else if (order > oldPositionIndex) {
+      const jobsToShiftUp = otherJobsInColumn.slice(oldPositionIndex, order);
+
+      for (const job of jobsToShiftUp) {
+        const newOrder = Math.max(0, job.order - 100);
+        await JobApplication.findByIdAndUpdate(job._id, {
+          $set: { order: newOrder },
+        });
+      }
+    }
+
+    updateToApply.order = newOrderValue;
   }
+
+  const updated = await JobApplication.findByIdAndUpdate(id, updateToApply, {
+    new: true,
+  });
+
+  return { data: JSON.parse(JSON.stringify(updated)) };
 }
