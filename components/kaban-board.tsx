@@ -22,6 +22,13 @@ import { Button } from "./ui/button";
 import CreateJobApplicationDialog from "./create-job-dialog";
 import JobApplicationCard from "./ui/job-application-card";
 import useBoards from "@/lib/hooks/useBoards";
+import {
+  closestCorners,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 interface KabanBoardProps {
   board: Board;
@@ -133,11 +140,21 @@ function SortableJobCard({
 }
 
 export default function KabanBoard({ board, userId }: KabanBoardProps) {
-  const { columns, moveJob } = useBoards(board);
+  const { columns } = useBoards(board);
   const sortedColumns = columns?.sort((a, b) => a.order - b.order) || [];
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
+  async function handleDragStart() {}
+  async function handleDragEnd() {}
 
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       <div className="">
         <div className="">
           {columns.map((col, key) => {
@@ -157,6 +174,6 @@ export default function KabanBoard({ board, userId }: KabanBoardProps) {
           })}
         </div>
       </div>
-    </>
+    </DndContext>
   );
 }
