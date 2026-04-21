@@ -29,11 +29,13 @@ import { useState } from "react";
 interface JobApplicationCardProps {
   job: JobApplication;
   columns: Column[];
+  dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 }
 
 export default function JobApplicationCard({
   job,
   columns,
+  dragHandleProps,
 }: JobApplicationCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -90,7 +92,10 @@ export default function JobApplicationCard({
   }
   return (
     <>
-      <Card className="cursor-pointer transition-shadow hover:shadow-2xl">
+      <Card
+        {...dragHandleProps}
+        className="cursor-pointer transition-shadow hover:shadow-2xl"
+      >
         <CardContent className="p-4">
           <div className="flex flex-start justify-between gap-2">
             <div className="">
