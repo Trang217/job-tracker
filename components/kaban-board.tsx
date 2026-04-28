@@ -227,6 +227,23 @@ export default function KabanBoard({ board, userId }: KabanBoardProps) {
     if (!draggedJob || !sourceColumn) return;
 
     // check if dropped in a column or in another job
+
+    const targetColumn = sortedColumns.find((col) => (col._id = overId));
+    const targetJob = sortedColumns
+      .flatMap((col) => col.jobApplications || [])
+      .find((job) => job._id === overId);
+
+    let targetColumnId: string;
+    let newOrder: number;
+
+    if (targetColumn) {
+      targetColumnId = targetColumn._id;
+      const jobsInTarget =
+        targetColumn.jobApplications
+          .filter((j) => j._id !== activeId)
+          .sort((a, b) => a.order - b.order) || [];
+      newOrder = jobsInTarget.length;
+    }
   }
 
   return (
