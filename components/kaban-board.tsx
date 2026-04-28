@@ -205,7 +205,28 @@ export default function KabanBoard({ board, userId }: KabanBoardProps) {
     if (!over || !board._id) return;
 
     const activeId = active.id as string;
-    const overId = over.id;
+    const overId = over.id as string;
+
+    let draggedJob: JobApplication | null = null;
+    let sourceColumn: Column | null = null;
+    let sourceIndex = -1;
+
+    for (const column of sortedColumns) {
+      const jobs =
+        column.jobApplications.sort((a, b) => a.order - b.order) || [];
+      const jobIndex = jobs.findIndex((j) => j._id === activeId);
+
+      if (jobIndex !== -1) {
+        draggedJob = jobs[jobIndex];
+        sourceColumn = column;
+        sourceIndex = jobIndex;
+        break;
+      }
+    }
+
+    if (!draggedJob || !sourceColumn) return;
+
+    // check if dropped in a column or in another job
   }
 
   return (
