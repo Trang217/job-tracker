@@ -243,6 +243,19 @@ export default function KabanBoard({ board, userId }: KabanBoardProps) {
           .filter((j) => j._id !== activeId)
           .sort((a, b) => a.order - b.order) || [];
       newOrder = jobsInTarget.length;
+    } else if (targetJob) {
+      const targetJobColumn = sortedColumns.find((col) =>
+        col.jobApplications.some((j) => j._id === targetJob._id),
+      );
+      targetColumnId = targetJob.columnId || targetJobColumn?._id || "";
+      if (!targetColumnId) return;
+      const targetColumnObj = sortedColumns.find(
+        (col) => col._id === targetColumnId,
+      );
+      if (!targetColumnObj) return;
+
+      const allJobsInTargetOriginal =
+        targetColumnObj.jobApplications.sort((a, b) => a.order - b.order) || [];
     }
   }
 
